@@ -43,8 +43,80 @@ const pause = async () =>{
     return await inquirer.prompt(pausa)
 }
 
+const readInput = async (message) =>{
+    const input = {
+        type: 'input',
+        name: 'site',
+        message,
+        validate( value ){
+            if(!value.length) return "Por favor ingrese una ciudad";
+            return true
+        }
+     }
+
+     const { site } = await inquirer.prompt(input)
+     
+     return site
+
+}
+
+const getRegister = async ( register ) =>{
+   let cities = []
+   register.forEach((city,i)=> {
+        if(i<=5){
+            let index = i+1 + '.';
+            obj = {
+                value : city,
+                name: `${index.green} ${city}`
+            }
+            cities.push(obj)
+        }
+    })
+    const listCities = {
+        type: 'list',
+        message: 'Historial de busqueda',
+        choices: cities,
+        name: 'registerSearch'
+
+    }
+
+    const {registerSearch} = await inquirer.prompt(listCities)
+
+    return registerSearch
+
+} 
+
+const listOptions = async (options) => {
+
+    const choices = options.map( op => {
+        return{
+            value: {
+                name:op.place_name,
+                value: op.text,
+                lat: op.center[0],
+                lng: op.center[1]
+            },
+            name:op.place_name
+        }
+    }) 
+
+    const listCityOptions = {
+        type: 'list',
+        message: 'Resultados',
+        choices,
+        name: 'cityOptions'
+    }
+
+    const {cityOptions} = await inquirer.prompt(listCityOptions)
+
+    return cityOptions
+}
+
 
 module.exports = {
     mainMenu,
-    pause
+    pause,
+    readInput,
+    getRegister,
+    listOptions
 }
