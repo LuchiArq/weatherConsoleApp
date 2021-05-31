@@ -62,16 +62,23 @@ const readInput = async (message) =>{
 
 const getRegister = async ( register ) =>{
    let cities = []
-   register.forEach((city,i)=> {
-        if(i<=5){
-            let index = i+1 + '.';
-            obj = {
-                value : city,
-                name: `${index.green} ${city}`
+   if(register.length){
+       register.forEach((city,i)=> {
+            if(i<=5){
+                let index = i+1 + '.';
+                obj = {
+                    value : city,
+                    name: `${index.green} ${city}`
+                }
+                cities.push(obj)
             }
-            cities.push(obj)
-        }
-    })
+        })
+   }else{
+       cities.push({
+           value:'0',
+           name:'Historial vacio'
+       })
+   }
     const listCities = {
         type: 'list',
         message: 'Historial de busqueda',
@@ -88,28 +95,30 @@ const getRegister = async ( register ) =>{
 
 const listOptions = async (options) => {
 
-    const choices = options.map( op => {
+    const choices = options.map( (op,i) => {
+
+        const index = i+1 +'.'
         return{
-            value: {
-                name:op.place_name,
-                value: op.text,
-                lat: op.center[0],
-                lng: op.center[1]
-            },
-            name:op.place_name
+            value: op.id,
+            name:`${index.green} ${op.name}`
         }
     }) 
 
+    choices.unshift({
+        value: '0',
+        name: '0.'.green + ' Cancelar'
+    })
+
     const listCityOptions = {
         type: 'list',
-        message: 'Resultados',
+        message: 'Resultados:',
         choices,
-        name: 'cityOptions'
+        name: 'id'
     }
 
-    const {cityOptions} = await inquirer.prompt(listCityOptions)
+    const {id} = await inquirer.prompt(listCityOptions)
 
-    return cityOptions
+    return id
 }
 
 
